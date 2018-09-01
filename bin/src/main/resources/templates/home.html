@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+	<div th:replace="components/header :: header-css"/>
+	<div th:replace="components/header :: header-js"/>
+</head>
+<body>
+	<div th:replace="components/header :: header"></div>
+	<div class="container">
+        <form>
+            <div>
+                <div class="col-md-1 urlLabelDiv"><label for="title-label">Input URL</label></div>
+                <div class="col-md-11 urlDiv"><input class="form-control" id="input-url" type="text" placeholder="Input the URL of page you want to read"/></div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="display: none;">Submit</button>
+        </form>
+		<iframe height="300px" width="100%" src="#" name="iframe_a" frameborder="0" id="iframeView" style="display: none;" allowfullscreen></iframe>
+        <!-- https websites are not working bcz of same origin issue. See how to solve it  -->
+        <div class="col-md-6 col-xs-8 row-fluid pull-right">
+            <div class="pull-right">
+                <a href="#" class="btn btn-info" role="button" target="iframe_a" id="urlButton" style="display: none;">Add URL</a>
+            </div>
+        </div>
+        <div class="col-md-6 col-xs-8 row-fluid noLeftPadding">
+            <form class="form">
+                    <div class="form-ele">
+                        <div class="col-md-2"><label for="title-label">Title</label></div>
+                        <div class="col-md-10"><input class="form-control" id="title-input" type="text" /></div>
+                    </div>
+                    <div class="form-ele">
+                        <div class="col-md-2"><label for="content-label">Content</label></div>
+                        <div class="col-md-10"><textarea class="form-control" name="" id="content-text" rows="1"></textarea></div>
+                    </div>
+                    <div class="form-ele">
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-info" id="saveNote">Save Note</button>
+                        </div>
+                    </div>
+            </form>
+        </div>
+	</div>
+	<div th:replace="components/footer :: footer"></div>
+</body>
+</html>
