@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,12 +33,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    
+    public static Cookie getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+        	for (Cookie cookie : cookies) {
+            	if (cookie.getName().equals(name)) {
+                    return cookie;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        String header = req.getHeader(Constants.HEADER_STRING);
+        // String header = req.getHeader(Constants.HEADER_STRING); // now we are using cookie based authorization, so we won't 
+    	// manually send header from client.
         String email = null;
         String authToken = null;
+        String header = getCookie(req, "Authorization") != null ? getCookie(req, "Authorization").getValue() : null;
+        
         if (header != null && header.startsWith(Constants.TOKEN_PREFIX)) {
             authToken = header.replace(Constants.TOKEN_PREFIX,"");
             try {

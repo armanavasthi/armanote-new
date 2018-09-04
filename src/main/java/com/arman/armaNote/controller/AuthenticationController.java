@@ -1,6 +1,11 @@
 package com.arman.armaNote.controller;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,8 +37,8 @@ public class AuthenticationController {
     private UserService userService;
 
     @RequestMapping(value = "/generate-token", method = RequestMethod.POST)
-    public ResponseEntity register(@RequestBody LoginUser loginUser) throws AuthenticationException {
-    	
+    public ResponseEntity register(@RequestBody LoginUser loginUser, HttpServletResponse response) throws AuthenticationException {
+    	// HttpServletResponse will help us adding cookie in response.
     	final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginUser.getEmail(),
@@ -41,13 +46,22 @@ public class AuthenticationController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         
         // final User user = userService.findUserByEmail(loginUser.getEmail());
         final User user = userService.findUserByUsernameOrEmail(loginUser.getEmail());
         
         final String token = jwtTokenUtil.generateToken(user);
-        return ResponseEntity.ok(new AuthToken(token));
+        // return ResponseEntity.ok(new AuthToken(token));
+        
+        Cookie cookie = new Cookie("Authorization","Bearer "+token);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        
+        // note that we are not adding response object to ResponseEntity. Bcz they are automatically interconnected by the framework.
+        ResponseEntity<AuthToken> responseEntity = new ResponseEntity<AuthToken>(new AuthToken(token), HttpStatus.OK);
+        System.out.println(responseEntity);
+        return responseEntity;
+
     }
 
 }
