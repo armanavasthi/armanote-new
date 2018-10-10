@@ -66,6 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// Check this portions requirement now (after adding jwt part, is it still required the same way or we can comment it)
+		// actually we can't comment as its giving error, so understand thoroughly how and where (exactly) this code is in use
 		auth.jdbcAuthentication()
 				.usersByUsernameQuery(userQuery)
 				.authoritiesByUsernameQuery(rolesQuery)
@@ -93,20 +95,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/token/*", "/login").permitAll()
 				.antMatchers("/registration").permitAll()
-				//.antMatchers("/webservice/**").permitAll()
-				.antMatchers("/webservice/**").hasAnyAuthority("ADMIN","WEBSERVICE","USER") // gave rights to user also so that we can make webservice calls from ajax
+				//.antMatchers("/api/**").permitAll()
+				.antMatchers("/api/**").hasAnyAuthority("ADMIN","WEBSERVICE","USER") // gave rights to user also so that we can make webservice calls from ajax
 				.antMatchers("/admin/**").hasAuthority("ADMIN")
 				.antMatchers("/user/**").hasAnyAuthority("ADMIN","USER")
 				.anyRequest().authenticated()
 				.and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().csrf().disable()
+				.and().csrf().disable() // csrf disabling is important especially when we have jwt added in browser cookies (cookies are prone to csrf attacks)
 				.formLogin().loginPage("/login")
 				.failureUrl("/login?error=true")
 				.defaultSuccessUrl("/user/home")
 				.usernameParameter("email")
 				.passwordParameter("password")
+				// probably this logout part is not required for our only-ws application now, but keeping it unchanged for now.
 				.and().logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 				.logoutSuccessUrl("/").and().exceptionHandling()

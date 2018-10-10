@@ -17,11 +17,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-//import javax.persistence.Transient;
+import javax.persistence.Transient;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Transient;
+// import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -96,7 +96,8 @@ public class User implements Serializable{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	@Transient
 	public String getPassword() {
 		return password;
 	}
@@ -164,7 +165,7 @@ public class User implements Serializable{
 
 /*
  * Note: transient annotation used on password is from spring, not the one from hibernate
- * differences between then can be seen here
+ * differences between them can be seen here
  * https://stackoverflow.com/questions/2154622/why-does-jpa-have-a-transient-annotation
  * https://stackoverflow.com/questions/42750977/transient-annotation-org-springframework-data-annotation-transient-annotation
  */

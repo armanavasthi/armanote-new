@@ -23,7 +23,7 @@ import com.arman.armaNote.service.UserService;
 
 
 @RestController
-@RequestMapping("/webservice/user")
+@RequestMapping("/api/user")
 public class UserController {
 	
 	@Autowired
@@ -45,6 +45,9 @@ public class UserController {
 	
 	@GetMapping(value="/{email}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public User getUser(@PathVariable String email) {
+		if (email.matches("\\d+")) {
+			return userService.findUserById(Long.parseLong(email));
+		}
 		// return userService.findUserByEmail(email);
 		return userService.findUserByUsernameOrEmail(email);
 	}

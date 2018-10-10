@@ -1,6 +1,7 @@
 package com.arman.armaNote.controller;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.arman.armaNote.config.JwtAuthenticationFilter;
 import com.arman.armaNote.config.JwtTokenUtil;
 import com.arman.armaNote.model.User;
 import com.arman.armaNote.model.AuthToken;
+import com.arman.armaNote.model.Constants;
 import com.arman.armaNote.model.LoginUser;
 import com.arman.armaNote.service.UserService;
 
@@ -35,7 +38,7 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
-
+    
     @RequestMapping(value = "/generate-token", method = RequestMethod.POST)
     public ResponseEntity register(@RequestBody LoginUser loginUser, HttpServletResponse response) throws AuthenticationException {
     	// HttpServletResponse will help us adding cookie in response.
@@ -55,10 +58,17 @@ public class AuthenticationController {
         
         Cookie cookie = new Cookie("Authorization","Bearer "+token);
         cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(-1);
         response.addCookie(cookie);
         
+        loginUser.setProfileImg("https://lh3.googleusercontent.com/-FVyJ-WChXTg/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DWLtq0siZ-zRT0F9TPvXIDMmqsMVQ/s64-c-mo/photo.jpg");
+        loginUser.setPassword("");
+        loginUser.setFullName(user.getFirstName() + " " + user.getLastName());
+        loginUser.setUserId(user.getId());
+        loginUser.setUsername(user.getUsername());
         // note that we are not adding response object to ResponseEntity. Bcz they are automatically interconnected by the framework.
-        ResponseEntity<AuthToken> responseEntity = new ResponseEntity<AuthToken>(new AuthToken(token), HttpStatus.OK);
+        ResponseEntity<LoginUser> responseEntity = new ResponseEntity<LoginUser>(loginUser, HttpStatus.OK);
         System.out.println(responseEntity);
         return responseEntity;
 
