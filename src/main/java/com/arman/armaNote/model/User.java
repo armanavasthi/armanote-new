@@ -17,11 +17,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-//import javax.persistence.Transient;
+import javax.persistence.Transient;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Transient;
+// import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -32,6 +32,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value={"createdAt", "lastLogin"})
 public class User implements Serializable{
 	
+	public User() {}
+	
+	public User(Long id, String username, String password, String email, String firstName, String middleName,
+			String lastName, int active, Set<Role> roles, Date createdAt, Date lastLogin) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.active = active;
+		this.roles = roles;
+		this.createdAt = createdAt;
+		this.lastLogin = lastLogin;
+	}
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "user_id")
@@ -96,7 +114,8 @@ public class User implements Serializable{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	@Transient
 	public String getPassword() {
 		return password;
 	}
@@ -164,7 +183,7 @@ public class User implements Serializable{
 
 /*
  * Note: transient annotation used on password is from spring, not the one from hibernate
- * differences between then can be seen here
+ * differences between them can be seen here
  * https://stackoverflow.com/questions/2154622/why-does-jpa-have-a-transient-annotation
  * https://stackoverflow.com/questions/42750977/transient-annotation-org-springframework-data-annotation-transient-annotation
  */

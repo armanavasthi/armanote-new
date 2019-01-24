@@ -3,6 +3,7 @@ package com.arman.armaNote.serviceImpl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -33,7 +34,15 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByUsernameOrEmail(email);
 	}
 	
+	public User findUserById(long userId) {
+		Optional<User> result = userRepository.findById(userId);
+		
+		return result.orElse(null); // send null though is not a good approach. better throw some exception.
+	}
+	
 	public void saveUser(User user) {
+		//you may also add that password follows a specific regex (like no space, must have special char)
+		
 		// encrypting the password
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		

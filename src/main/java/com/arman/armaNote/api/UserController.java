@@ -23,16 +23,17 @@ import com.arman.armaNote.service.UserService;
 
 
 @RestController
-@RequestMapping("/webservice/user")
+@RequestMapping("/api/user")
 public class UserController {
 	
 	@Autowired
 	private UserService userService;
 	
+	
 	@CrossOrigin(origins= "http://localhost:4200")
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map> getUsers(){
-		Map response = new HashMap();
+	public ResponseEntity<Map<String, Object>> getUsers(){
+		Map<String, Object> response = new HashMap<>();
 		List<User> users = userService.getAllUsers();
 		HttpHeaders httpHeader = new HttpHeaders();
 		httpHeader.add("success", "true");
@@ -40,11 +41,20 @@ public class UserController {
 		response.put("success", true);
 		response.put("Data", users);
 		
-		return new ResponseEntity<Map>(response, httpHeader ,HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(response, httpHeader ,HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/{email}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public User getUser(@PathVariable String email) {
+		// variable name is email, but id/username/email can be passed
+		// write a proper code (using Optional probably) to handle the case where no user found (404) or 500 etc.
+		if (email.matches("\\d+")) {
+			long userId = Long.parseLong(email);
+//			if(userId < 1) {
+//				
+//			}
+			return userService.findUserById(userId);
+		}
 		// return userService.findUserByEmail(email);
 		return userService.findUserByUsernameOrEmail(email);
 	}
@@ -61,7 +71,7 @@ public class UserController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		HttpStatus httpStatus = null;
 		
-		if(user1 == null || user1.getEmail() == null) {
+		if(user1 == null || user1.getEmail() == null || user1.getEmail().isEmpty()) {
 			httpHeaders.add("message", "Please send proper user details");
 			httpStatus = HttpStatus.NOT_FOUND;
 		}
@@ -74,7 +84,7 @@ public class UserController {
 			httpHeaders.add("message", "There is no user with this email");
 			httpStatus = HttpStatus.NOT_FOUND;
 		}
-		else if (!user1.getEmail().equalsIgnoreCase(currentUsername)) {
+		else if (!user1.getEmail().equalsIgnoreCase(currentUsername)) { // check it again
 			httpHeaders.add("message", "You are not authorized to change other user's informations");
 			httpStatus = HttpStatus.UNAUTHORIZED;
 		}
