@@ -100,57 +100,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.js" // For swagger
 				).permitAll().antMatchers("/token/*", "/login").permitAll().antMatchers("/registration").permitAll()
 				// .antMatchers("/api/**").permitAll()
-				.antMatchers("/api/**").hasAnyAuthority("ADMIN", "WEBSERVICE", "USER") // gave rights to user also so
-																						// that we can make webservice
-																						// calls from ajax
+				.antMatchers("/api/**")
+				.hasAnyAuthority("ADMIN", "WEBSERVICE", "USER") // gave rights to user also so
+																// that we can make webservice
+																// calls from ajax
 				.antMatchers("/admin/**").hasAuthority("ADMIN").antMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
 				.anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable() // csrf
-																															// disabling
-																															// is
-																															// important
-																															// especially
-																															// when
-																															// we
-																															// have
-																															// jwt
-																															// added
-																															// in
-																															// browser
-																															// cookies
-																															// (cookies
-																															// are
-																															// prone
-																															// to
-																															// csrf
-																															// attacks)
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable()
+				 // csrf disabling is important especially when we have jwt added in browser cookies (cookies are prone to csrf attacks)
 				.formLogin().loginPage("/login").failureUrl("/login?error=true").defaultSuccessUrl("/user/home")
 				.usernameParameter("email").passwordParameter("password")
 				// probably this logout part is not required for our only-ws application now,
 				// but keeping it unchanged for now.
 				.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").and()
-				.exceptionHandling().accessDeniedPage("/access-denied").and().headers().frameOptions().sameOrigin(); // this
-																														// last
-																														// line
-																														// is
-																														// added
-																														// bcz
-																														// otherwise
-																														// I
-																														// was
-																														// getting
-																														// "X-frame-option
-																														// set
-																														// to
-																														// deny"
-																														// error
-																														// in
-																														// iframe.
-																														// So
-																														// I
-																														// followed:
-																														// https://docs.spring.io/spring-security/site/docs/current/reference/html/headers.html
-
+				.exceptionHandling().accessDeniedPage("/access-denied").and().headers().frameOptions().sameOrigin();																														
+				// last line is added bcz otherwise I was getting "X-frame-option set to deny" error in iframe. So I followed:
+				// https://docs.spring.io/spring-security/site/docs/current/reference/html/headers.html
 		http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 	}
 
