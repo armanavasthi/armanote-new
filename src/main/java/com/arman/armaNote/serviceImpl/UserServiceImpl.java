@@ -41,6 +41,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void saveUser(User user) {
+		//you may also add that password follows a specific regex (like no space, must have special char)
+		
 		// encrypting the password
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		

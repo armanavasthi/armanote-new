@@ -35,7 +35,6 @@ public class LogoutController {
         response.addCookie(cookie);
         
         ResponseEntity<Boolean> responseEntity = new ResponseEntity<Boolean>(true, HttpStatus.OK);
-        System.out.println(responseEntity);
         return responseEntity;
 
     }

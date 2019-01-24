@@ -32,6 +32,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value={"createdAt", "lastLogin"})
 public class User implements Serializable{
 	
+	public User() {}
+	
+	public User(Long id, String username, String password, String email, String firstName, String middleName,
+			String lastName, int active, Set<Role> roles, Date createdAt, Date lastLogin) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.active = active;
+		this.roles = roles;
+		this.createdAt = createdAt;
+		this.lastLogin = lastLogin;
+	}
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "user_id")

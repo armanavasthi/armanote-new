@@ -50,10 +50,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         // String header = req.getHeader(Constants.HEADER_STRING); // now we are using cookie based authorization, so we won't 
     	// manually send header from client.
+        String header;
         String email = null;
         String authToken = null;
-        String header = getCookie(req, "Authorization") != null ? getCookie(req, "Authorization").getValue() : null;
-        
+        if (req.getHeader("SwaggerAuthorization") != null) {
+        	header = req.getHeader("SwaggerAuthorization");
+		} else {
+			header = getCookie(req, "Authorization") != null ? getCookie(req, "Authorization").getValue() : null;
+		}
+
         if (header != null && header.startsWith(Constants.TOKEN_PREFIX)) {
             authToken = header.replace(Constants.TOKEN_PREFIX,"");
             try {
@@ -68,12 +73,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.error("Authentication Failed. Username or Password not valid.");
             }
         } else {
+        	Cookie cookie = new Cookie("Authorization", "");
+    		cookie.setPath("/");
+    		cookie.setHttpOnly(true);
+    		cookie.setMaxAge(-1);
+    		res.addCookie(cookie);
             // logger.warn("couldn't find bearer string, will ignore the header");
         }
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             // User user = userService.findUserByEmail(email);
         	User user = userService.findUserByUsernameOrEmail(email);
+        	System.out.println("Token === " + authToken);
 
             if (jwtTokenUtil.validateToken(authToken, user)) {
             	String role = userService.getUserRole(email);
@@ -84,6 +95,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
+        
+        // if client wants to refresh the filter
+        if (req.getHeader("refresh_token") != null && req.getHeader("refresh_token").equals("true")) {
+        	final User user = userService.findUserByUsernameOrEmail(email);
+
+    		final String token = jwtTokenUtil.generateToken(user);
+    		
+    		Cookie cookie = new Cookie("Authorization", "Bearer " + token);
+    		cookie.setPath("/");
+    		cookie.setHttpOnly(true);
+    		cookie.setMaxAge(-1);
+    		res.addCookie(cookie);
+		}
 
         chain.doFilter(req, res);
     }
