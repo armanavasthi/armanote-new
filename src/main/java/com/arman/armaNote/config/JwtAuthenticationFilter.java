@@ -84,7 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // User user = userService.findUserByEmail(email);
         	User user = userService.findUserByUsernameOrEmail(email);
-        	System.out.println("Token === " + authToken);
+        	logger.debug("Token:: " + authToken);
 
             if (jwtTokenUtil.validateToken(authToken, user)) {
             	String role = userService.getUserRole(email);
@@ -94,10 +94,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.info("authenticated user " + email + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        }
+        }  
         
         // if client wants to refresh the filter
         if (req.getHeader("refresh_token") != null && req.getHeader("refresh_token").equals("true")) {
+        	logger.debug("about to refresh token");
         	final User user = userService.findUserByUsernameOrEmail(email);
 
     		final String token = jwtTokenUtil.generateToken(user);

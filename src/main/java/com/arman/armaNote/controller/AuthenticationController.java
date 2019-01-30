@@ -1,5 +1,7 @@
 package com.arman.armaNote.controller;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -61,6 +63,11 @@ public class AuthenticationController {
 		loginUser.setFullName(user.getFirstName() + " " + user.getLastName());
 		loginUser.setUserId(user.getId());
 		loginUser.setUsername(user.getUsername());
+		ArrayList<String> roles = new ArrayList<>();
+		user.getRoles().stream().forEach( r -> {
+			roles.add(r.getRole());
+		});
+		loginUser.setRoles(roles);
 		// note that we are not adding response object to ResponseEntity. Bcz they are
 		// automatically interconnected by the framework.
 		ResponseEntity<LoginUser> responseEntity = new ResponseEntity<LoginUser>(loginUser, HttpStatus.OK);

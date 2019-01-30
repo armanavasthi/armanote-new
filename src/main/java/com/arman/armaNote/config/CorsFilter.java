@@ -1,7 +1,6 @@
 package com.arman.armaNote.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,39 +14,50 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class CorsFilter implements Filter {
-	
+
 	private final List<String> allowedOrigins = Arrays.asList("http://localhost:4200");
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
 
-    }
+	}
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        HttpServletRequest request= (HttpServletRequest) servletRequest;
-        String origin = request.getHeader("Origin");
-        
-        if (allowedOrigins.contains(origin)) { 
-        	// We must have allowed headers, allowed origins in our response header otherwise browser 
-            // gives error when we send set-credentials=true in our request. Reason: since set-credentials 
-            // makes browser to add cookie in browser sent by server, so it ensures of extra security 
-        	// by the server.
-        	response.setHeader("Access-Control-Allow-Origin", origin);
-            response.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, "
-            		+ "Content-Type, Accept, X-CSRF-TOKEN, Access-Control-Allow-Headers");
-            response.setHeader("Vary", "Origin");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.setHeader("Access-Control-Max-Age", "180");
+	@Override
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+			throws IOException, ServletException {
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		String origin = request.getHeader("Origin");
+
+		if (allowedOrigins.contains(origin)) {			
+		   /*
+			* We must have allowed headers, allowed origins in our response header otherwise browser
+			* gives error when we send set-credentials=true in our request. Reason: since set-credentials
+			* makes browser to add cookie in browser sent by server, so it ensures of extra security by the server.
+			*/
+			response.setHeader("Access-Control-Allow-Origin", origin);
+			response.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+			response.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, "
+					+ "Content-Type, Accept, X-CSRF-TOKEN, Access-Control-Allow-Headers, refresh_token");
+			response.setHeader("Vary", "Origin");
+			response.setHeader("Access-Control-Allow-Credentials", "true");
+			response.setHeader("Access-Control-Max-Age", "180");			
 		}
-        
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
+		/*
+		 * reason: when we send any request, browser first sends OPTIONS request to check whether that 
+		 * type of request is allowed or not. If we do not handle this OPTIONS request (with OK response), browser blocks our 
+		 * request saying that the response of OPTIONS does not contain HTTP OK so we are not allowing the request.
+		 * for more info: https://stackoverflow.com/a/52048304/7456022 and https://stackoverflow.com/a/36821971/7456022
+		 */
+		if ("OPTIONS".equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else { 
+        	filterChain.doFilter(servletRequest, servletResponse);
+        }
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public void destroy() {
 
-    }
+	}
 }

@@ -55,32 +55,32 @@ public class SwaggerConfiguration {
 
 		Contact contact = new Contact("Matyas Albert-Nagy", "https://justrocket.de", "matyas@justrocket.de");
 
+		@SuppressWarnings("rawtypes")
 		List<VendorExtension> vext = new ArrayList<>();
 		ApiInfo apiInfo = new ApiInfo("Backend API", "Armanote is to read notes in browser", "0.0.1",
 				"http://arman.avasthi.com/termsandcondition", contact, "MIT", "http://armanote.com", vext);
 
 		List<SecurityContext> securityContexts = new ArrayList<>();
 		securityContexts.add(securityContext());
-		
+
 		/*
 		 * This way was for normal configuration i.e. if there is no security in project
-		   
-		   return new Docket(DocumentationType.SWAGGER_2)
-		        .apiInfo(DEFAULT_API_INFO)
-		        .produces(DEFAULT_PRODUCES_AND_CONSUMES)
-		        .consumes(DEFAULT_PRODUCES_AND_CONSUMES);
-
-		*/
+		 * 
+		 * return new Docket(DocumentationType.SWAGGER_2) .apiInfo(DEFAULT_API_INFO)
+		 * .produces(DEFAULT_PRODUCES_AND_CONSUMES)
+		 * .consumes(DEFAULT_PRODUCES_AND_CONSUMES);
+		 * 
+		 */
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo).pathMapping("/")
 				.apiInfo(ApiInfo.DEFAULT)
-				//.forCodeGeneration(true).genericModelSubstitutes(ResponseEntity.class)
-				//.ignoredParameterTypes(Pageable.class).ignoredParameterTypes(java.sql.Date.class)
-				//.directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
-				//.directModelSubstitute(java.time.ZonedDateTime.class, Date.class)
-				//.directModelSubstitute(java.time.LocalDateTime.class, Date.class)
-				.securityContexts(securityContexts)
-				.securitySchemes(Lists.newArrayList(apiKey())).useDefaultResponseMessages(false);
+				// .forCodeGeneration(true).genericModelSubstitutes(ResponseEntity.class)
+				// .ignoredParameterTypes(Pageable.class).ignoredParameterTypes(java.sql.Date.class)
+				// .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
+				// .directModelSubstitute(java.time.ZonedDateTime.class, Date.class)
+				// .directModelSubstitute(java.time.LocalDateTime.class, Date.class)
+				.securityContexts(securityContexts).securitySchemes(Lists.newArrayList(apiKey()))
+				.useDefaultResponseMessages(false);
 
 		docket = docket.select().paths(regex(DEFAULT_INCLUDE_PATTERN)).build();
 

@@ -98,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.html", // For swagger
 						"/**/*.css", // For swagger
 						"/**/*.js" // For swagger
-				).permitAll().antMatchers("/token/*", "/login").permitAll().antMatchers("/registration").permitAll()
+				).permitAll().antMatchers("/token/*", "/login").permitAll().antMatchers("/api/user/registration").permitAll()
 				// .antMatchers("/api/**").permitAll()
 				.antMatchers("/api/**")
 				.hasAnyAuthority("ADMIN", "WEBSERVICE", "USER") // gave rights to user also so

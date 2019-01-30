@@ -3,12 +3,13 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="com.arman.armaNote.seerviceImpl.UserServiceImplTest">
+      <class name="com.arman.armaNote.api.UserControllerTest">
         <methods>
-          <include name="saveUserCase1"/>
+          <include name="saveUserCase1" invocation-numbers="0"/>
           <include name="init"/>
+          <include name="updateUserCase2" invocation-numbers="0"/>
         </methods>
-      </class> <!-- com.arman.armaNote.seerviceImpl.UserServiceImplTest -->
+      </class> <!-- com.arman.armaNote.api.UserControllerTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

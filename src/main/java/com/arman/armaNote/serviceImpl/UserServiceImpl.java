@@ -30,8 +30,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
+	@Override
 	public User findUserByUsernameOrEmail(String email) {
 		return userRepository.findByUsernameOrEmail(email);
+	}
+	
+	@Override
+	public User findUserByUsernameOrEmail(String email, String username) {
+		return userRepository.findByUsernameOrEmail(email, username);
 	}
 	
 	public User findUserById(long userId) {
@@ -45,11 +51,13 @@ public class UserServiceImpl implements UserService {
 		
 		// encrypting the password
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.setActive(1);
 		
-		// conditions for different roles for now the user is always of "USER" type (no admin, no visitor for now)
-		Role role = roleRepository.findByRole("USER");
-		user.setRoles(new HashSet<Role>(Arrays.asList(role)));
-		
+		// if user doesn't have any role then by default assign "USER" role
+		if (user.getRoles() == null) {
+			Role role = roleRepository.findByRole("USER");
+			user.setRoles(new HashSet<Role>(Arrays.asList(role)));
+		}
 		
 		userRepository.save(user);
 	}
@@ -58,16 +66,25 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll();
 	}
 	
+	@Override
+	public User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = null;
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+		    Object principal = authentication.getPrincipal();
+		    if (principal instanceof User) currentUser= ((User) principal);	    
+		}
+		return currentUser;
+	}
+	
 	// below code is taken from http://www.baeldung.com/get-user-in-spring-security
 	// there are other nice ways to get current user given in the link above. Please do read.
 	@Override
 	public String getCurrentUsername() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentUserName = null;
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-		    currentUserName = authentication.getName();
-		}
-		return currentUserName;  // note that currently it is returning email, bcz of our security setup.
+		User user = this.getCurrentUser();
+		if (user != null) currentUserName = user.getUsername();
+		return currentUserName;
 	}
 	
 	public String getUserRole(String email) {

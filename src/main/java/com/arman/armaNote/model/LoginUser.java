@@ -1,12 +1,16 @@
 package com.arman.armaNote.model;
 
+import java.util.ArrayList;
+
 public class LoginUser {
-	String email;
-	String username;
-	String password;
+	private String email;
+	private String username;
+	private String password;
 	long userId;
-	String profileImg;
-	String fullName;
+	private String profileImg;
+	private String fullName;
+	private ArrayList<String> roles;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -43,4 +47,11 @@ public class LoginUser {
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
+	public ArrayList<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(ArrayList<String> roles) {
+		this.roles = roles;
+	}
+	
 }

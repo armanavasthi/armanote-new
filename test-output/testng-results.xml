@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" ignored="1" total="2" passed="1">
+<testng-results skipped="0" failed="0" ignored="5" total="6" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="264" started-at="2018-12-24T15:44:03Z" finished-at="2018-12-24T15:44:04Z">
+  <suite name="Default suite" duration-ms="1101" started-at="2019-01-29T13:58:58Z" finished-at="2019-01-29T13:58:59Z">
     <groups>
       <group name="UNIT">
-        <method signature="UserServiceImplTest.saveUserCase1(java.util.List, com.arman.armaNote.model.Role)[pri:0, instance:com.arman.armaNote.seerviceImpl.UserServiceImplTest@2db7a79b]" name="saveUserCase1" class="com.arman.armaNote.seerviceImpl.UserServiceImplTest"/>
+        <method signature="UserControllerTest.saveUserCase1(java.util.List)[pri:0, instance:com.arman.armaNote.api.UserControllerTest@365185bd]" name="saveUserCase1" class="com.arman.armaNote.api.UserControllerTest"/>
       </group> <!-- UNIT -->
     </groups>
-    <test name="Default test" duration-ms="264" started-at="2018-12-24T15:44:03Z" finished-at="2018-12-24T15:44:04Z">
-      <class name="com.arman.armaNote.seerviceImpl.UserServiceImplTest">
-        <test-method status="PASS" signature="init()[pri:0, instance:com.arman.armaNote.seerviceImpl.UserServiceImplTest@2db7a79b]" name="init" is-config="true" duration-ms="228" started-at="2018-12-24T21:14:03Z" finished-at="2018-12-24T21:14:04Z">
+    <test name="Default test" duration-ms="1101" started-at="2019-01-29T13:58:58Z" finished-at="2019-01-29T13:58:59Z">
+      <class name="com.arman.armaNote.api.UserControllerTest">
+        <test-method status="PASS" signature="init()[pri:0, instance:com.arman.armaNote.api.UserControllerTest@365185bd]" name="init" is-config="true" duration-ms="864" started-at="2019-01-29T19:28:58Z" finished-at="2019-01-29T19:28:59Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- init -->
-        <test-method status="PASS" signature="saveUserCase1(java.util.List, com.arman.armaNote.model.Role)[pri:0, instance:com.arman.armaNote.seerviceImpl.UserServiceImplTest@2db7a79b]" name="saveUserCase1" duration-ms="13" started-at="2018-12-24T21:14:04Z" data-provider="usersAndRolesDataProvider" finished-at="2018-12-24T21:14:04Z">
+        <test-method status="PASS" signature="saveUserCase1(java.util.List)[pri:0, instance:com.arman.armaNote.api.UserControllerTest@365185bd]" name="saveUserCase1" duration-ms="204" started-at="2019-01-29T19:28:59Z" data-provider="usersDataProvider" finished-at="2019-01-29T19:28:59Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[com.arman.armaNote.model.User@6aba2b86, com.arman.armaNote.model.User@158da8e]]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[com.arman.armaNote.model.Role@74e52303]]>
+                <![CDATA[[User [id=null, username=null, password=null, email=null, firstName=testFirstName, middleName=null, lastName=null, active=0, roles=null, createdAt=Tue Jan 29 19:28:58 IST 2019, lastLogin=Tue Jan 29 19:28:58 IST 2019], User [id=null, username=testuser, password=testpwd, email=testuser@test.com, firstName=Test, middleName=null, lastName=Man, active=1, roles=[Role [id=1, role=TestRole1], Role [id=1, role=USER]], createdAt=Tue Jan 29 19:28:58 IST 2019, lastLogin=Tue Jan 29 19:28:58 IST 2019], User [id=null, username=bestuser, password=bestpwd, email=bestuser@test.com, firstName=Best, middleName=null, lastName=Man, active=1, roles=[Role [id=1, role=USER]], createdAt=Tue Jan 29 19:28:58 IST 2019, lastLogin=Tue Jan 29 19:28:58 IST 2019]]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- saveUserCase1 -->
-      </class> <!-- com.arman.armaNote.seerviceImpl.UserServiceImplTest -->
+      </class> <!-- com.arman.armaNote.api.UserControllerTest -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

@@ -2,12 +2,15 @@ package com.arman.armaNote.api;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -17,8 +20,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.arman.armaNote.model.Role;
 import com.arman.armaNote.model.User;
 import com.arman.armaNote.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mockit.Expectations;
@@ -138,19 +143,77 @@ public class UserControllerTest {
 		.andExpect(status().isNotFound());
 	}
 	
+	@Test(enabled=true, groups="UNIT", dataProvider="usersDataProvider")
+	public void saveUserCase1(List<User> users) throws Exception {
+		/*new Expectations() {{
+			userService.getCurrentUser();
+			result = null;
+		}};*/
+		
+		new Expectations() {{
+			userService.findUserByUsernameOrEmail(anyString, anyString);
+			result =  null;
+		}};
+		
+		new Expectations() {{
+			userService.saveUser(users.get(2));
+			// result = users.get(1);
+		}};
+		
+		
+		mockMvc.perform(post("/api/user/registration")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(getUserJson(users.get(2))))
+		.andExpect(status().isOk());
+	}
 	
+	public static String getUserJson(User user) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(user);
+	}
 	
 	@DataProvider(name = "usersDataProvider")
 	private Object[][] usersDataProvider() {
 		User user1 = new User();
 		user1.setFirstName("testFirstName");
+		
+		Role role1 = new Role();
+		role1.setId(1);
+		role1.setRole("TestRole1");
+		Role role2 = new Role();
+		role2.setId(1);
+		role2.setRole("USER");
+		Set<Role> roles = new HashSet<>();
+		roles.add(role1);
+		roles.add(role2);
+		
+		Set<Role> roles2 = new HashSet<>();
+		roles2.add(role2);
+		
 		User user2 = new User();
-		user2.setActive(1);
+		user2.setFirstName("Test");
+		user2.setLastName("Man");		
 		user2.setEmail("testuser@test.com");
 		user2.setUsername("testuser");
+		user2.setPassword("testpwd");
+		user2.setActive(1);
+		user2.setRoles(roles);
+		
+		
+		User user3 = new User();
+		user3.setFirstName("Best");
+		user3.setLastName("Man");		
+		user3.setEmail("bestuser@test.com");
+		user3.setUsername("bestuser");
+		user3.setPassword("bestpwd");
+		user3.setActive(1);
+		user3.setRoles(roles2);
+		
+		
 		List<User> users = new ArrayList<User>();
 		users.add(user1);
 		users.add(user2);
+		users.add(user3);
 		
 		return new Object[][] {{ users }};
 	}
