@@ -63,6 +63,7 @@ public class UserController {
 	@PostMapping(value = "/registration", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> saveUser(@RequestBody User user) {
 		HttpStatus httpStatus = null;
+		User currentUser = userService.getCurrentUser();
 		
 		/*
 		 * 1. check the roles
@@ -77,8 +78,7 @@ public class UserController {
 			.filter(role ->	!role.getRole().equals("USER"))
 			.findFirst();
 		
-		if (nonUser.isPresent()) {
-			User currentUser = userService.getCurrentUser();
+		if (nonUser.isPresent()) {			
 			if (currentUser == null || 
 					(currentUser != null && 
 							!currentUser.getRoles().stream()
@@ -95,6 +95,7 @@ public class UserController {
 		}
 		
 		if (httpStatus == null) {
+			user.setCreator(currentUser);
 			userService.saveUser(user);
 			httpStatus = HttpStatus.OK;
 		}

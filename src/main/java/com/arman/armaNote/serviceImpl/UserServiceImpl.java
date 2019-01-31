@@ -87,7 +87,11 @@ public class UserServiceImpl implements UserService {
 		return currentUserName;
 	}
 	
-	public String getUserRole(String email) {
-		return userRepository.findUserRole(email);
+	public String[] getUserRoles(String email) {
+		return userRepository.findUserRoles(email);
+	}
+	
+	public String getMostPriorRole(String email) {
+		return userRepository.findMaxPriorRole(email);
 	}
 }

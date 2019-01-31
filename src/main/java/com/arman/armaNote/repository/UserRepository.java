@@ -13,7 +13,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	// https://www.baeldung.com/spring-data-jpa-query
 	@Query(value="select r.role from user u inner join user_role ur on(u.user_id=ur.user_id) inner join role r on(ur.role_id=r.role_id) where u.email=?1",
 			nativeQuery=true)
-	public String findUserRole(String email);
+	public String[] findUserRoles(String email);
+	
+	@Query(value="select r.role from user u join user_role ur on u.user_id = ur.user_id \n" + 
+			" inner join role r on r.role_id = ur.role_id where u.email = 'armanavasthi@gmail.com' "
+			+ "or u.username = '' order by r.role_id asc limit 1",
+			nativeQuery=true)
+	public String findMaxPriorRole(String email);
 	
 	@Query(value="select * from user where email=?1 or username=?1",
 			nativeQuery=true)

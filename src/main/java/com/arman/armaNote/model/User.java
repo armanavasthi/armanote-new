@@ -9,12 +9,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,10 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @EntityListeners(EnableJpaAuditing.class)
 @JsonIgnoreProperties(value={"createdAt", "lastLogin"})
 public class User implements Serializable{
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public User() {}
@@ -79,14 +78,22 @@ public class User implements Serializable{
 	@Column(name = "active")
 	private int active;
 	
+	@ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "created_by", nullable=false, foreignKey = @ForeignKey(name = "FK_USER_SELF_USER"))
+	private User creator;
+	
 	public int getActive() {
 		return active;
 	}
 
 	public void setActive(int active) {
 		this.active = active;
+	}	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
-	
+
 	// Fetch eager becz of https://stackoverflow.com/a/11746720/7456022 (got this error while calling "/api/role/")
 	// CascadeType.MERGE instead of ALL bcz of https://stackoverflow.com/a/29235227/7456022 (got this error while saving multiple roles with a user in post user api)
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -263,6 +270,14 @@ public class User implements Serializable{
 
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+	
+	public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
 	}
 }
 

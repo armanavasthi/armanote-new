@@ -9,6 +9,7 @@ target/
 .settings
 .springBeans
 StepsUsed.txt
+test-output/*
 
 ### IntelliJ IDEA ###
 .idea
