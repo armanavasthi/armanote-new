@@ -27,6 +27,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 // import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -80,6 +81,7 @@ public class User implements Serializable{
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "created_by", nullable=false, foreignKey = @ForeignKey(name = "FK_USER_SELF_USER"))
+	@JsonBackReference // https://stackoverflow.com/a/27408104/7456022 (another answers of this ques can also be tried but this one is working)
 	private User creator;
 	
 	public int getActive() {

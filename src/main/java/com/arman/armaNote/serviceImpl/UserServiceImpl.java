@@ -32,15 +32,26 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User findUserByUsernameOrEmail(String email) {
+		if (email.equals("")) {
+			return null;
+		}
 		return userRepository.findByUsernameOrEmail(email);
 	}
 	
 	@Override
 	public User findUserByUsernameOrEmail(String email, String username) {
+		if (email.equals("")) {
+			return userRepository.findByUsernameOrEmail(username);
+		} else if (username.equals("")) {
+			return userRepository.findByUsernameOrEmail(email);
+		}
 		return userRepository.findByUsernameOrEmail(email, username);
 	}
 	
 	public User findUserById(long userId) {
+		if (userId < 1) {
+			return null;
+		}
 		Optional<User> result = userRepository.findById(userId);
 		
 		return result.orElse(null); // send null though is not a good approach. better throw some exception.
@@ -72,7 +83,7 @@ public class UserServiceImpl implements UserService {
 		User currentUser = null;
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 		    Object principal = authentication.getPrincipal();
-		    if (principal instanceof User) currentUser= ((User) principal);	    
+		    if (principal instanceof User) currentUser = ((User) principal);	    
 		}
 		return currentUser;
 	}

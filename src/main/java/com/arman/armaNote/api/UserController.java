@@ -56,7 +56,6 @@ public class UserController {
 			// }
 			return userService.findUserById(userId);
 		}
-		// return userService.findUserByEmail(email);
 		return userService.findUserByUsernameOrEmail(email);
 	}
 	
@@ -80,55 +79,55 @@ public class UserController {
 		
 		if (nonUser.isPresent()) {			
 			if (currentUser == null || 
-					(currentUser != null && 
-							!currentUser.getRoles().stream()
-							.filter(role -> role.getRole().equals("ADMIN")).findFirst().isPresent())) {
+						!currentUser.getRoles().stream()
+							.filter(role -> role.getRole().equals("ADMIN")).findFirst().isPresent()) {
 				httpStatus = HttpStatus.UNAUTHORIZED;
 			}
 		}
 		
-		// if already a user with same username or email then return back with warning
-		User oldUser = userService.findUserByUsernameOrEmail(user.getEmail(), user.getUsername());
-		
-		if (oldUser != null) {
-			httpStatus = HttpStatus.CONFLICT; // https://stackoverflow.com/a/3826024/7456022
-		}
-		
 		if (httpStatus == null) {
-			user.setCreator(currentUser);
-			userService.saveUser(user);
-			httpStatus = HttpStatus.OK;
+			// if already a user with same username or email then return back with warning
+			User oldUser = userService.findUserByUsernameOrEmail(user.getEmail(), user.getUsername());
+			
+			if (oldUser != null) {
+				httpStatus = HttpStatus.CONFLICT; // https://stackoverflow.com/a/3826024/7456022
+			}
+			
+			if (httpStatus == null) {
+				user.setCreator(currentUser);
+				userService.saveUser(user);
+				httpStatus = HttpStatus.OK;
+			}
 		}
 		
 		return new ResponseEntity<Boolean>(httpStatus);
 	}
 
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> updateUser(@RequestBody User user1) {
-		User user = null;
+	public ResponseEntity<Boolean> updateUser(@RequestBody User user) {
+		User userFromDB = null;
 		String currentUsername = userService.getCurrentUsername();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		HttpStatus httpStatus = null;
 
-		if (user1 == null || user1.getEmail() == null || user1.getEmail().isEmpty()) {
+		if (user.getEmail() == null || user.getEmail().isEmpty()) {
 			httpHeaders.add("message", "Please send proper user details");
 			httpStatus = HttpStatus.NOT_FOUND;
 		} else {
-			// user = userService.findUserByEmail(user1.getEmail());
-			user = userService.findUserByUsernameOrEmail(user1.getEmail());
+			userFromDB = userService.findUserByUsernameOrEmail(user.getEmail());
 		}
 
-		if (user == null) {
+		if (userFromDB == null) {
 			httpHeaders.add("message", "There is no user with this email");
 			httpStatus = HttpStatus.NOT_FOUND;
-		} else if (!user1.getEmail().equalsIgnoreCase(currentUsername)) { // check it again
+		} else if (!user.getUsername().equalsIgnoreCase(currentUsername)) {
 			httpHeaders.add("message", "You are not authorized to change other user's informations");
 			httpStatus = HttpStatus.UNAUTHORIZED;
-		} else if (!user1.getUsername().equals(user.getUsername())) {
+		} else if (!user.getUsername().equals(userFromDB.getUsername())) {
 			httpHeaders.add("message", "You cannot change your username");
 			httpStatus = HttpStatus.UNAUTHORIZED;
 		} else {
-			userService.saveUser(user1);
+			userService.saveUser(user);
 			httpHeaders.add("message", "User details are updated successfully");
 			httpStatus = HttpStatus.OK;
 		}

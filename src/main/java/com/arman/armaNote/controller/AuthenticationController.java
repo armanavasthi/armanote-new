@@ -63,6 +63,8 @@ public class AuthenticationController {
 		loginUser.setFullName(user.getFirstName() + " " + user.getLastName());
 		loginUser.setUserId(user.getId());
 		loginUser.setUsername(user.getUsername());
+		loginUser.setFirstName(user.getFirstName());
+		loginUser.setLastName(user.getLastName());
 		ArrayList<String> roles = new ArrayList<>();
 		user.getRoles().stream().forEach( r -> {
 			roles.add(r.getRole());

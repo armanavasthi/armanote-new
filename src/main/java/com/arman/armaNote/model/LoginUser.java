@@ -9,6 +9,9 @@ public class LoginUser {
 	long userId;
 	private String profileImg;
 	private String fullName;
+	private String firstName;
+	private String lastName;
+	
 	private ArrayList<String> roles;
 	
 	public String getEmail() {
@@ -52,6 +55,18 @@ public class LoginUser {
 	}
 	public void setRoles(ArrayList<String> roles) {
 		this.roles = roles;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	
 }
