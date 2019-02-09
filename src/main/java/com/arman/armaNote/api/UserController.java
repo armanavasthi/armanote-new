@@ -133,4 +133,9 @@ public class UserController {
 		}
 		return new ResponseEntity<Boolean>(true, httpHeaders, httpStatus);
 	}
+	
+	@GetMapping(value="/logincheck")
+	public ResponseEntity<Boolean> loginCheck() {
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
 }
